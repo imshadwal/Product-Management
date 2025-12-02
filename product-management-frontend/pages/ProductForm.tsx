@@ -3,6 +3,8 @@ import type { Product } from "../components/product";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { productSchema, type ProductFormValues } from "../schemas/productSchema";
+import { Button } from "../components/atoms";
+import { FormField } from "../components/molecules";
 
 interface ProductFormProps {
   initial?: Partial<Product>;
@@ -26,7 +28,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ initial, onSave, onCancel }) 
   });
 
   useEffect(() => {
-    // When `initial` changes (editing a different product), reset the form
     reset({
       name: initial?.name ?? "",
       price: initial?.price ?? 0,
@@ -36,7 +37,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ initial, onSave, onCancel }) 
 
   const onSubmit = (data: ProductFormValues) => {
     onSave({ name: data.name.trim(), price: Number(data.price), description: data.description ?? "" });
-    // reset form fields (keeps defaults in case of editing again)
     reset({ name: "", price: 0, description: "" });
   };
 
@@ -44,56 +44,40 @@ const ProductForm: React.FC<ProductFormProps> = ({ initial, onSave, onCancel }) 
     <div className="max-w-xl mx-auto bg-white p-6 rounded-lg shadow">
       <h2 className="text-2xl font-semibold text-gray-700 mb-6">{initial ? "Edit Product" : "Add Product"}</h2>
       <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
-        <div>
-          <label className="block text-sm font-medium text-gray-600 mb-1">Product Name</label>
-          <input
-            type="text"
-            {...register("name")}
-            placeholder="Enter product name"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600"
-          />
-          {errors.name && <p className="text-red-600 text-sm mt-1">{errors.name.message}</p>}
-        </div>
+        <FormField
+          label="Product Name"
+          type="text"
+          placeholder="Enter product name"
+          error={errors.name?.message}
+          inputProps={register("name")}
+        />
 
-        <div>
-          <label className="block text-sm font-medium text-gray-600 mb-1">Price</label>
-          <input
-            type="number"
-            step="0.01"
-            min={0}
-            {...register("price", { valueAsNumber: true })}
-            placeholder="Enter price"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600"
-          />
-          {errors.price && <p className="text-red-600 text-sm mt-1">{errors.price.message}</p>}
-        </div>
+        <FormField
+          label="Price"
+          type="number"
+          placeholder="Enter price"
+          min={0}
+          step="0.01"
+          error={errors.price?.message}
+          inputProps={register("price", { valueAsNumber: true })}
+        />
 
-        <div>
-          <label className="block text-sm font-medium text-gray-600 mb-1">Description</label>
-          <textarea
-            {...register("description")}
-            placeholder="Enter product description"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600"
-          />
-          {errors.description && <p className="text-red-600 text-sm mt-1">{String(errors.description?.message)}</p>}
-        </div>
+        <FormField
+          label="Description"
+          type="textarea"
+          placeholder="Enter product description"
+          error={errors.description?.message ? String(errors.description.message) : undefined}
+          inputProps={register("description")}
+        />
 
         <div className="flex gap-2">
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="flex-1 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition-colors"
-          >
+          <Button type="submit" disabled={isSubmitting} variant="primary" className="flex-1">
             Save Product
-          </button>
+          </Button>
           {onCancel && (
-            <button
-              type="button"
-              onClick={onCancel}
-              className="flex-1 py-2 border rounded hover:bg-gray-100 transition-colors"
-            >
+            <Button type="button" onClick={onCancel} variant="secondary" className="flex-1 border">
               Cancel
-            </button>
+            </Button>
           )}
         </div>
       </form>

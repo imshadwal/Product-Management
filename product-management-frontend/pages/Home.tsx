@@ -1,7 +1,8 @@
 import { useReducer } from "react";
 import { useProducts, useCreateProduct, useUpdateProduct, useDeleteProduct } from "../hooks/useProducts";
 import ProductList from "./ProductList";
-import SearchBar from "../components/SearchBar";
+import { SearchBar } from "../components/molecules";
+import { Button } from "../components/atoms";
 import ProductForm from "./ProductForm";
 import type { Product } from "../components/product";
 
@@ -119,12 +120,9 @@ const Home = () => {
               dispatch({ type: "setPage", payload: 1 });
             }}
           />
-          <button
-            onClick={openAddModal}
-            className="px-4 py-2 bg-indigo1 text-white rounded hover:bg-indigo1/90"
-          >
+          <Button variant="primary" onClick={openAddModal}>
             Add Product
-          </button>
+          </Button>
         </div>
       </div>
 

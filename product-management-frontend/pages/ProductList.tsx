@@ -1,6 +1,5 @@
-import ProductCard from "../components/ProductCard";
+import { ProductCard, PaginationControls } from "../components/molecules";
 import type { Product } from "../components/product";
-import Pagination from "../components/Pagination";
 
 interface ProductListProps {
   products: Product[];
@@ -42,7 +41,7 @@ const ProductList: React.FC<ProductListProps> = ({
           </div>
 
           {totalPages > 1 && (
-            <Pagination
+            <PaginationControls
               page={page}
               totalPages={totalPages}
               onPrev={() => onPageChange(page - 1)}

@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "../pages/Home";
 import ProductList from "../pages/ProductList";
 import ProductForm from "../pages/ProductForm";
-import type { Product } from "../components/product";
+import type { Product } from "../types/product";
 
 function App() {
   // Dummy handlers for now

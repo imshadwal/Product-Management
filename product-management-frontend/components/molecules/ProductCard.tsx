@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Product } from '../product';
+import type { Product } from '../../types/product';
 import { Button } from '../atoms';
 
 interface ProductCardProps {

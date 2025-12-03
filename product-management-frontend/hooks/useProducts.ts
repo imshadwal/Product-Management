@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fetchProducts, createProduct, updateProduct, deleteProduct } from '../src/api/product';
-import type { Product } from '../components/product';
+import type { Product } from '../types/product';
 
 // Query key factory
 export const productKeys = {

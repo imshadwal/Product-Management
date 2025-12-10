@@ -15,3 +15,71 @@ model Product {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
+model Customer {
+  id          String    @id @default(uuid())
+  userId      String
+  phoneNumber String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  orders      Order[]
+}
+
+model Order {
+  id         String    @id @default(uuid())
+  customerId String
+  customer   Customer  @relation(fields: [customerId], references: [id])
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  deletedAt  DateTime?
+  items      Item[]
+  invoices   Invoice[]
+}
+
+model Item {
+  id            String    @id @default(uuid())
+  orderId       String
+  order         Order     @relation(fields: [orderId], references: [id])
+  quantity      Int
+  totalPrice    Float
+  totalDiscount Float
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime?
+}
+
+model Invoice {
+  id                   String               @id @default(uuid())
+  orderId              String
+  order                Order                @relation(fields: [orderId], references: [id])
+  total                Float
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @updatedAt
+  deletedAt            DateTime?
+  paymentTransactions  PaymentTransaction[]
+}
+
+model PaymentType {
+  id                   String               @id @default(uuid())
+  name                 String               @unique
+  paymentTransactions  PaymentTransaction[]
+}
+
+enum PaymentStatus {
+  InProgress
+  Success
+  Fail
+}
+
+model PaymentTransaction {
+  id            String        @id @default(uuid())
+  invoiceId     String
+  invoice       Invoice       @relation(fields: [invoiceId], references: [id])
+  paymentTypeId String
+  paymentType   PaymentType   @relation(fields: [paymentTypeId], references: [id])
+  amount        Float
+  status        PaymentStatus @default(InProgress)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}

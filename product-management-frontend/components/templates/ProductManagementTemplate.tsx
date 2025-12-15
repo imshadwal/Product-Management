@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { SearchBar } from "../molecules";
 import { Button } from "../atoms";
 import { ProductListOrganism, ProductFormOrganism } from "../organisms";
@@ -72,6 +73,12 @@ const ProductManagementTemplate: React.FC<ProductManagementTemplateProps> = ({
         <div className="text-left">
           <h1 className="text-4xl font-bold text-indigo1">Product Management</h1>
           <p className="mt-2 text-lg text-gray-600">Manage your products with ease</p>
+          <Link 
+            to="/customers" 
+            className="mt-2 inline-block text-blue-600 hover:text-blue-800 underline font-medium"
+          >
+            Customer Data
+          </Link>
         </div>
         <div className="flex items-center gap-4">
           <SearchBar value={searchTerm} onChange={onSearchChange} />

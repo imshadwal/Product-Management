@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "../pages/Home";
 import ProductList from "../pages/ProductList";
 import ProductForm from "../pages/ProductForm";
+import CustomerData from "../pages/CustomerData";
 import type { Product } from "../types/product";
 
 function App() {
@@ -44,6 +45,8 @@ function App() {
             path="/products/:id/edit"
             element={<ProductForm onSave={handleSaveProduct} />}
           />
+
+          <Route path="/customers" element={<CustomerData />} />
         </Routes>
       </div>
     </Router>

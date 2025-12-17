@@ -28,4 +28,29 @@ export class CustomersService {
     
     return { data: customers, total, page, limit };
   }
+
+  async *streamCustomersInBatches(batchSize: number = 100, limit?: number) {
+    let skip = 0;
+    let totalFetched = 0;
+
+    while (true) {
+      const take = limit ? Math.min(batchSize, limit - totalFetched) : batchSize;
+      if (take <= 0) break;
+
+      const customers = await this.prisma.customer.findMany({
+        where: { deletedAt: null },
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take,
+      });
+
+      if (customers.length === 0) break;
+      
+      yield customers;
+      skip += customers.length;
+      totalFetched += customers.length;
+
+      if (limit && totalFetched >= limit) break;
+    }
+  }
 }

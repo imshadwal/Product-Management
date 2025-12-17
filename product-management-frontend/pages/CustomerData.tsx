@@ -5,11 +5,44 @@ import type { Customer } from "../types/customer";
 
 const CustomerData: React.FC = () => {
   const [page, setPage] = useState(1);
+  const [isExporting, setIsExporting] = useState(false);
+  const [exportProgress, setExportProgress] = useState('');
   const limit = 100;
   const { data, isLoading, error } = useCustomers(page, limit);
 
   const handleExport = () => {
-    console.log("Exporting Data");
+    setIsExporting(true);
+    
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', 'http://localhost:3000/customers/export', true);
+    xhr.responseType = 'blob';
+    xhr.timeout = 600000;
+    
+    xhr.onprogress = (e) => {
+      const mb = (e.loaded / 1024 / 1024).toFixed(1);
+      setExportProgress(`Downloading: ${mb} MB...`);
+    };
+    
+    xhr.onload = () => {
+      if (xhr.status === 200) {
+        const url = window.URL.createObjectURL(xhr.response);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'customers.xlsx';
+        link.click();
+        window.URL.revokeObjectURL(url);
+      }
+      setExportProgress('');
+      setIsExporting(false);
+    };
+    
+    xhr.onerror = xhr.ontimeout = () => {
+      alert('Export failed. Please try again.');
+      setExportProgress('');
+      setIsExporting(false);
+    };
+    
+    xhr.send();
   };
 
   const customers = data?.data || [];
@@ -45,9 +78,16 @@ const CustomerData: React.FC = () => {
             Showing {customers.length} of {total.toLocaleString()} customers
           </p>
         </div>
-        <Button variant="primary" onClick={handleExport}>
-          Export Data
-        </Button>
+        <div className="flex flex-col items-end gap-2">
+          <Button variant="primary" onClick={handleExport} disabled={isExporting}>
+            {isExporting ? 'Exporting...' : 'Export Data'}
+          </Button>
+          {exportProgress && (
+            <p className="text-sm text-blue-600 animate-pulse">
+              {exportProgress}
+            </p>
+          )}
+        </div>
       </div>
 
       {customers && customers.length > 0 ? (
